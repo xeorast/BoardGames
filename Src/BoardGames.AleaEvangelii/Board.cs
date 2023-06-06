@@ -8,6 +8,12 @@ public class Board
 	{
 		(_fields, Heigth, Width) = DefaultBoard.GetBoard();
 	}
+	public Board( PieceType?[,] state )
+	{
+		_fields = state;
+		Heigth = state.GetLength( 0 );
+		Width = state.GetLength( 1 );
+	}
 
 	private readonly PieceType?[,] _fields;
 	public int Width { get; }

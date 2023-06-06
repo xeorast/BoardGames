@@ -7,6 +7,13 @@ public class AleaEvangeliiGame
 {
 	private readonly Board _board;
 
+	public AleaEvangeliiGame( Board board, Player? winner, Player? nowPlaying )
+	{
+		_board = board;
+		Winner = winner;
+		NowPlaying = nowPlaying;
+	}
+
 	public AleaEvangeliiGame()
 	{
 		_board = new();
