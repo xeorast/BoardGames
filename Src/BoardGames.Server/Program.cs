@@ -1,7 +1,8 @@
-using System.Text.Json.Serialization;
-using System.Text.Json;
+using BoardGames.Server.Data.AleaEvangelii.Firestore;
 using BoardGames.Server.Hubs;
-using BoardGames.Server.Data.AleaEvangelii;
+using Google.Cloud.Firestore;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder( args );
 
@@ -11,8 +12,6 @@ builder.Services
 	{
 		options.PayloadSerializerOptions.Converters.Add( new JsonStringEnumConverter( JsonNamingPolicy.CamelCase ) );
 	} );
-
-builder.Services.AddSingleton<IAERoomStorage, AERoomStorage>();
 
 var corsOrigins = builder.Configuration
 			.GetValue<string>( "CorsOrigin" )
@@ -30,12 +29,21 @@ builder.Services.AddCors( o =>
 	} );
 } );
 
+FirestoreDb firestoreDb = FirestoreDb.Create( builder.Configuration["Firestore:ProjectId"],
+	new Google.Cloud.Firestore.V1.FirestoreClientBuilder()
+	{
+		JsonCredentials = builder.Configuration["Firestore:CredentialsJsonString"],
+	}.Build() );
+
+builder.Services.AddSingleton( firestoreDb );
+builder.Services.AddSingleton<IAsyncAERoomStorage, FirestoreAERoomStorage>();
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 
 app.UseCors();
 
-app.MapHub<AleaEvangeliiHub>( "/realtime/alea-evangelii" );
+app.MapHub<AleaEvangeliiAsyncHub>( "/realtime/alea-evangelii" );
 
 app.Run();

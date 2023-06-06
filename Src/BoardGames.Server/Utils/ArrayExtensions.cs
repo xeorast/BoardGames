@@ -18,4 +18,27 @@ public static class ArrayExtensions
 
 		return arr;
 	}
+
+	public static T[,] To2DArray<T>( this T[][] arrOfArr )
+	{
+		var height = arrOfArr.Length;
+		var width = arrOfArr[0].Length;
+		var arr2d = new T[height, width];
+
+		for ( int row = 0; row < height; row++ )
+		{
+			if ( arrOfArr[row].Length != width )
+			{
+				throw new ArgumentException( "All rows of 2d array must heve the same length.", nameof( arrOfArr ) );
+			}
+
+			for ( int col = 0; col < width; col++ )
+			{
+				arr2d[row, col] = arrOfArr[row][col];
+			}
+		}
+
+		return arr2d;
+	}
+
 }
