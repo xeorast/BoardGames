@@ -6,7 +6,7 @@ namespace BoardGames.Server.Data.AleaEvangelii.Firestore;
 public interface IAsyncAERoomStorage
 {
 	Task<string> CreateRoom();
-	Task<(AEJoinRoomResult result, Player player)> TryJoinRoom( string roomId, string playerId );
+	Task<(AEJoinRoomResult result, Player player)> TryJoinRoom( string roomId, string playerId, Player? prefferedPlayer );
 	Task LeaveRoom( string roomId, string playerId );
 	Task<(bool success, AleaEvangeliiGame? game)> TryGetGame( string roomId );
 	//// todo: dont allow saving the game returned in different transaction transaction
@@ -59,7 +59,7 @@ public class FirestoreAERoomStorage : IAsyncAERoomStorage
 		return id;
 	}
 
-	public async Task<(AEJoinRoomResult result, Player player)> TryJoinRoom( string roomId, string playerId )
+	public async Task<(AEJoinRoomResult result, Player player)> TryJoinRoom( string roomId, string playerId, Player? prefferedPlayer )
 	{
 		DocumentReference documentRef = _firestoreDb.Collection( collectionPath ).Document( roomId );
 
@@ -80,7 +80,10 @@ public class FirestoreAERoomStorage : IAsyncAERoomStorage
 				return (AEJoinRoomResult.RoomIsFull, default);
 			}
 
-			var chosen = possible[Random.Shared.Next( 0, possible.Length )];
+			var chosen = prefferedPlayer is not null && possible.Contains( prefferedPlayer.Value )
+				? prefferedPlayer.Value
+				: possible[Random.Shared.Next( 0, possible.Length )];
+
 			room.PresentPlayers.Add( playerId, chosen );
 
 			transaction.Set( documentRef, room, SetOptions.Overwrite );

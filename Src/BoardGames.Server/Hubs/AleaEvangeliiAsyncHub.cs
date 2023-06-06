@@ -31,8 +31,22 @@ public class AleaEvangeliiAsyncHub : Hub<IAleaEvangeliiClient>, IAleaEvangeliiSe
 		string? roomId = httpContext.Request.Query["room-id"];
 		roomId ??= await _roomStorage.CreateRoom();
 
+		string? preferredPlayerStr = httpContext.Request.Query["prefer-player"];
+		Player? preferredPlayer = null;
+		if ( preferredPlayerStr is not null )
+		{
+			if ( !Enum.TryParse<Player>( preferredPlayerStr, ignoreCase: true, out var pref ) )
+			{
+				await Clients.Caller.Disconnect( $"Prefer-player parameter must be one of " +
+					$"the following values: {string.Join( ", ", Enum.GetNames<Player>() )}." );
+				Context.Abort();
+				return;
+			}
+			preferredPlayer = pref;
+		}
+
 		Player playingAs;
-		switch ( await _roomStorage.TryJoinRoom( roomId, Context.ConnectionId ) )
+		switch ( await _roomStorage.TryJoinRoom( roomId, Context.ConnectionId, preferredPlayer ) )
 		{
 			case (AEJoinRoomResult.RoomDoesNotExists, _ ):
 				await Clients.Caller.Disconnect( "Room with specified id does not exist." );
