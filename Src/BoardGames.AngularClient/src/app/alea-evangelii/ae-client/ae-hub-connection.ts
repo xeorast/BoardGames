@@ -12,6 +12,7 @@ export class AeHubConnection extends AeHubConnectionBase {
         hubUrlRoomId: number | null,
         hubUrlPreferPlayer: Player | null ) {
         super( hubUrl, hubUrlRoomId, hubUrlPreferPlayer )
+        this._roomId = hubUrlRoomId ?? undefined
     }
 
     private _game?: Game

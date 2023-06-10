@@ -20,6 +20,8 @@ export class AeRoomComponent implements OnInit, OnDestroy {
   public get game() {
     return this.gameConnection?.game ?? null
   }
+  public preferredPlayer?: string
+  public error?: string
 
   constructor(
     private route: ActivatedRoute,
@@ -32,9 +34,10 @@ export class AeRoomComponent implements OnInit, OnDestroy {
     this.route.url
       .pipe( withLatestFrom( this.route.paramMap, this.route.queryParamMap ) )
       .subscribe( ( [url, paramMap, queryParamMap] ) => {
-        this.connectTo(
-          paramMap.get( 'room-id' ),
-          queryParamMap.get( 'player' ) as Player )
+        let id = paramMap.get( 'room-id' )
+        let player = queryParamMap.get( 'player' ) as Player
+        this.preferredPlayer = player
+        this.connectTo( id, player )
       } );
   }
 
@@ -60,6 +63,9 @@ export class AeRoomComponent implements OnInit, OnDestroy {
       this.gameConnMan.gameConnection = con
       con.joined.subscribe( joinRes => {
         this.router.navigate( ['/alea-evangelii', joinRes.roomId], { queryParams: { 'player': joinRes.joinedAs } } );
+      } )
+      con.disconnected.subscribe( reason => {
+        this.error = reason
       } )
     } )
   }

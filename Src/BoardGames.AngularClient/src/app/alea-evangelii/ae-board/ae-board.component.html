@@ -1,6 +1,6 @@
-<div class="board-frame">
-    <div *ngIf="game && fields"
-        class="board" [ngStyle]="{'--board-width': game.board.width, '--board-height': game.board.height}">
+<div class="board-frame" *ngIf="game && fields">
+    <!-- ACTUAL CONTENT -->
+    <div class="board" [ngStyle]="{'--board-width': game.board.width, '--board-height': game.board.height}">
         <ng-container *ngFor="let field of fields; let index = index;">
             <div class="field"
                 [ngClass]="{'forbidden-field': field.isCorner, 'can-move-to': field.canPieceBeMovedTo}"
@@ -25,6 +25,22 @@
     </div>
 </div>
 
-<div *ngIf="!(game&&fields)">
-    Loading...
+<div *ngIf="!(game&&fields)" class="placeholder-glow">
+    <div class="board-frame placeholder d-block">
+        <!-- PLACEHOLDER -->
+        <div class="board" [ngStyle]="{'--board-width': 19, '--board-height': 19}">
+            <ng-container *ngFor="let field of placeholderFields; let index = index;">
+                <div class="field"
+                    [ngClass]="{'forbidden-field': field.isCorner, 'can-move-to': field.canPieceBeMovedTo}"
+                    [ngStyle]="{'grid-row': field.row+1, 'grid-column': field.column+1}"
+                    (click)="field.moveTo()">
+                </div>
+            </ng-container>
+        </div>
+        <div class="game-loading">
+            <h3 class="display-4 game-loading-title">
+                Łączenie...
+            </h3>
+        </div>
+    </div>
 </div>

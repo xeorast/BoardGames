@@ -15,7 +15,8 @@ $selecting-piece-zindex: 3;
     position: relative;
 }
 
-.game-result {
+.game-result,
+.game-loading {
     position: absolute;
     z-index: 10;
     left: 50%;
@@ -30,10 +31,15 @@ $selecting-piece-zindex: 3;
         color: var(--bs-danger);
     }
 
-    .game-result-title {
+    .game-result-title,
+    .game-loading-title {
         font-weight: 700;
         text-shadow: 0 0 4px white, 0 0 2px black, 0 0 5px currentColor;
     }
+}
+
+.game-loading .game-loading-title {
+    color: white;
 }
 
 .board {

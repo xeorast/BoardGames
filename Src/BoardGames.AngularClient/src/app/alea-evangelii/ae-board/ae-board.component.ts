@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Game } from '../logic/game';
-import { Position } from '../logic/types';
+import { AeFieldModel } from './ae-feld-model';
 
 @Component( {
   selector: 'app-alea-evangelii-board',
@@ -9,12 +9,12 @@ import { Position } from '../logic/types';
 } )
 export class AeBoardComponent implements OnInit {
 
-  private _game?: Game;
+  private _game?: Game | null;
   private _fields?: AeFieldModel[];
 
   @Input()
-  public get game(): Game | undefined { return this._game; }
-  public set game( value: Game | undefined ) {
+  public get game(): Game | undefined | null { return this._game; }
+  public set game( value: Game | undefined | null ) {
     this._game = value;
     if ( value ) {
       this._fields = this.generateFields( value )
@@ -49,44 +49,7 @@ export class AeBoardComponent implements OnInit {
     return fields
   }
 
-}
-
-export class AeFieldModel {
-  public row: number
-  public column: number
-  public isCorner: boolean
-
-  constructor(
-    private game: Game,
-    pos: Position ) {
-    this.row = pos.row
-    this.column = pos.column
-    this.isCorner = game.board.isForbidden( pos.row, pos.column )
-  }
-
-  public get piece() {
-    return this.game.board.pieceAt( this.row, this.column )
-  }
-
-  public get canPieceBeMovedTo() {
-    return this.game.canMoveTo( this.row, this.column )
-  }
-
-  public get canPieceBeMovedFrom() {
-    return this.game.canMoveFrom( this.row, this.column )
-  }
-
-  public get isSelected() {
-    return this.game.isSelected( this.row, this.column )
-  }
-
-  public moveTo() {
-    this.game.moveTo( this.row, this.column )
-  }
-
-  public select() {
-    this.game.selectPiece( this.row, this.column )
-  }
+  public get placeholderFields() { return AeFieldModel.placeholderFields }
 
 }
 
