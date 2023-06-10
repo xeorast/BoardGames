@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AeClientService } from '../ae-client/ae-client.service';
 import { AeHubConnection } from '../ae-client/ae-hub-connection';
 import { AeConnectionManagerService } from '../ae-connection-manager/ae-connection-manager.service';
+import { withLatestFrom } from 'rxjs';
+import { Player } from '../logic/types';
 
 @Component( {
   selector: 'app-ae-room',
@@ -27,30 +29,37 @@ export class AeRoomComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe( params => this.connectTo( params.get( 'room-id' ) ) )
+    this.route.url
+      .pipe( withLatestFrom( this.route.paramMap, this.route.queryParamMap ) )
+      .subscribe( ( [url, paramMap, queryParamMap] ) => {
+        this.connectTo(
+          paramMap.get( 'room-id' ),
+          queryParamMap.get( 'player' ) as Player )
+      } );
   }
 
   ngOnDestroy(): void {
     this.gameConnection?.disconnect()
   }
 
-  connectTo( rommIdVal: string | null ) {
+  connectTo( rommIdVal: string | null, player: Player | null ) {
     if ( this.gameConnMan.gameConnection && this.gameConnMan.gameConnection != this.gameConnection ) {
       this.gameConnection = this.gameConnMan.gameConnection
     }
 
     let roomId = rommIdVal == null ? null : Number( rommIdVal )
-    if ( this.gameConnection && roomId == this.gameConnection.roomId ) {
+    if ( this.gameConnection && roomId == this.gameConnection.roomId
+      && this.gameConnection.game && player == this.gameConnection.game.playingAs ) {
       return
     }
 
-    this.gameClient.startConnection( roomId ).subscribe( con => {
+    this.gameClient.startConnection( roomId, player ).subscribe( con => {
       this.gameConnection?.disconnect()
       this.gameConnection = con
 
       this.gameConnMan.gameConnection = con
       con.joined.subscribe( joinRes => {
-        this.router.navigate( ['/alea-evangelii', joinRes.roomId] );
+        this.router.navigate( ['/alea-evangelii', joinRes.roomId], { queryParams: { 'player': joinRes.joinedAs } } );
       } )
     } )
   }

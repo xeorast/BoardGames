@@ -7,7 +7,8 @@ export abstract class AeHubConnectionBase {
 
     constructor(
         private hubUrl: string,
-        private hubUrlRoomId: number | null
+        private hubUrlRoomId: number | null,
+        private hubUrlPreferPlayer: Player | null
     ) {
         this.hubConnection = new signalR.HubConnectionBuilder()
             .withUrl( this.buildUrl() )
@@ -15,7 +16,6 @@ export abstract class AeHubConnectionBase {
     }
     private hubConnection: signalR.HubConnection
     private isCloseExpected = false
-    private hubUrlPreferPlayer: Player | null = null
 
     protected abstract onJoinedAs( joinRes: JoinResult ): void
     protected abstract onMovePerformed( moveSummary: MoveSummary ): void

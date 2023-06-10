@@ -3,13 +3,15 @@ import { ReplaySubject, Subject } from "rxjs";
 import { Board } from "../logic/board";
 import { Game, MoveSummary } from "../logic/game";
 import { AeHubConnectionBase, JoinResult } from "./ae-hub-connection-base";
+import { Player } from "../logic/types";
 
 export class AeHubConnection extends AeHubConnectionBase {
 
     constructor(
         hubUrl: string,
-        hubUrlRoomId: number | null ) {
-        super( hubUrl, hubUrlRoomId )
+        hubUrlRoomId: number | null,
+        hubUrlPreferPlayer: Player | null ) {
+        super( hubUrl, hubUrlRoomId, hubUrlPreferPlayer )
     }
 
     private _game?: Game
