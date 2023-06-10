@@ -6,8 +6,10 @@ import { AeHubConnectionBase, JoinResult } from "./ae-hub-connection-base";
 
 export class AeHubConnection extends AeHubConnectionBase {
 
-    constructor( hubConnection: signalR.HubConnection ) {
-        super( hubConnection )
+    constructor(
+        hubUrl: string,
+        hubUrlRoomId: number | null ) {
+        super( hubUrl, hubUrlRoomId )
     }
 
     private _game?: Game

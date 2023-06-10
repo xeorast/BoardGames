@@ -15,20 +15,9 @@ export class AeClientService {
   }
 
   private async startConnectionAsync( roomId: number | null ) {
-    let url = roomId != null
-      ? `${AeClientService.hubUrl}?room-id=${roomId}`
-      : AeClientService.hubUrl
-
-    let hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl( url )
-      .build();
-
-    await hubConnection
-      .start()
-      .then( () => console.log( 'Connection started' ) )
-      .catch( err => console.log( 'Error while starting connection: ' + err ) )
-
-    return new AeHubConnection( hubConnection )
+    let connection = new AeHubConnection( AeClientService.hubUrl, roomId )
+    await connection.BeginConnection()
+    return connection
   }
 
 }
