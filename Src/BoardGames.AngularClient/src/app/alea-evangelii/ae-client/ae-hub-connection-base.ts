@@ -57,6 +57,10 @@ export abstract class AeHubConnectionBase {
         this.onJoinedAs( joinRes )
     }
 
+    private _onDisconnect( reason: string ) {
+        this.isCloseExpected = true
+    }
+
     private buildUrl() {
         let url = this.hubUrl
         if ( this.hubUrlRoomId ) {
@@ -77,6 +81,7 @@ export abstract class AeHubConnectionBase {
 
         this.hubConnection.on( 'JoinedAs', jr => this._onJoinedAs( jr ) )
         this.hubConnection.on( 'MovePerformed', ms => this.onMovePerformed( ms ) )
+        this.hubConnection.on( 'Disconnect', dr => this._onDisconnect( dr ) )
         this.hubConnection.on( 'Disconnect', dr => this.onDisconnect( dr ) )
         this.hubConnection.onclose( err => this.onClose( err ) )
     }
