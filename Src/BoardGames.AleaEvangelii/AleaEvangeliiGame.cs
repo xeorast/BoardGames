@@ -7,11 +7,12 @@ public class AleaEvangeliiGame
 {
 	private readonly Board _board;
 
-	public AleaEvangeliiGame( Board board, Player? winner, Player? nowPlaying )
+	public AleaEvangeliiGame( Board board, Player? winner, Player? nowPlaying, MoveSummary? lastMove )
 	{
 		_board = board;
 		Winner = winner;
 		NowPlaying = nowPlaying;
+		LastMove = lastMove;
 	}
 
 	public AleaEvangeliiGame()
@@ -21,6 +22,7 @@ public class AleaEvangeliiGame
 
 	public Player? Winner { get; private set; }
 	public Player? NowPlaying { get; private set; } = Player.Attacker;
+	public MoveSummary? LastMove { get; private set; } = null;
 
 	private PieceType?[] GetColumn( int column )
 	{
@@ -121,13 +123,17 @@ public class AleaEvangeliiGame
 
 		GameEndData? endData = Winner is not null ? new( Winner.Value ) : null;
 
-		return new MoveResult( new MoveSummary()
+		MoveSummary summary = new()
 		{
 			From = from,
 			To = to,
 			Captured = capturedPositions,
 			GameEndData = endData,
-		} );
+		};
+
+		LastMove = summary;
+
+		return new MoveResult( summary );
 	}
 
 	private static bool IsEmpty( Span<PieceType?> range )

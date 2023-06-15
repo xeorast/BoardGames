@@ -45,7 +45,7 @@ export class AeFieldModel {
     private static generatePlaceholderFields() {
         let state: BoardEntry[][] = Array.from( Array( 19 ), () => new Array( 19 ) )
         let board = new Board( state, 19, 19 )
-        let game = new Game( board, null as any as Player, null, null, ( _1, _2 ) => of() )
+        let game = new Game( board, null as any as Player, null, null, null, ( _1, _2 ) => of() )
 
         let fields: AeFieldModel[] = []
         for ( let row = 0; row < game.board.height; row++ ) {

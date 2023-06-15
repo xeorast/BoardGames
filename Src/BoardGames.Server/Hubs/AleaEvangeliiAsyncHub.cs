@@ -88,7 +88,8 @@ public class AleaEvangeliiAsyncHub : Hub<IAleaEvangeliiClient>, IAleaEvangeliiSe
 			roomId,
 			game.NowPlaying,
 			game.Winner,
-			board.ToArrayOfArrays() );
+			board.ToArrayOfArrays(),
+			game.LastMove );
 		await Clients.Caller.JoinedAs( joinResult );
 	}
 

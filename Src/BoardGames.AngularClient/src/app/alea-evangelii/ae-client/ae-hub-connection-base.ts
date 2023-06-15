@@ -94,4 +94,5 @@ export interface JoinResult {
     winner: Player | null
     roomId: number
     boardState: BoardEntry[][]
+    lastMove: MoveSummary | null
 }

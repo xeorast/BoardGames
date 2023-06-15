@@ -8,6 +8,7 @@ export class Game {
         public playingAs: Player,
         public nowPlaying: Player | null,
         public winner: Player | null = null,
+        public lastMove: MoveSummary | null,
         private moveCallback: ( from: Position, to: Position ) => Observable<MoveResult>
     ) { }
 
@@ -92,6 +93,7 @@ export class Game {
             this.nowPlaying = this.nowPlaying == "attacker" ? "defender" : "attacker"
         }
 
+        this.lastMove = ms
     }
 
 }
