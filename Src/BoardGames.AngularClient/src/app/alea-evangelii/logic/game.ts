@@ -1,6 +1,6 @@
 import { Observable, ReplaySubject } from "rxjs"
 import { Board } from "./board"
-import { Player, Position } from "./types"
+import { OwnerOfPiece, Player, Position } from "./types"
 
 export class Game {
     constructor(
@@ -82,6 +82,11 @@ export class Game {
     applyMove( ms: MoveSummary ) {
         this.board.move( ms.from, ms.to )
         for ( const captured of ms.captured ) {
+            var capturedPiece = this.board.pieceAt( captured.row, captured.column )
+            if ( capturedPiece != null ) {
+                this.captured[OwnerOfPiece( capturedPiece )] += 1
+            }
+
             this.board.capture( captured )
         }
 

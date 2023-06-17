@@ -54,11 +54,12 @@ $horizontal-layout-break: 600px;
 .game-stats {
     grid-area: stats;
     display: grid;
-    grid-template-rows: auto minmax(auto, 4rem);
+    grid-template-rows: auto auto minmax(auto, 4rem);
     grid-template-columns: max-content minmax(0, auto);
     grid-template-areas:
         "now-heading you"
-        "now .";
+        "now capt-att"
+        "now capt-def";
     justify-items: center;
     padding: 0 1rem;
     border-radius: .25rem;
@@ -105,6 +106,17 @@ $horizontal-layout-break: 600px;
     grid-area: you;
     justify-self: end;
     align-self: baseline;
+    font-weight: 500;
+}
+
+.captured-defender {
+    grid-area: capt-def;
+    justify-self: end;
+}
+
+.captured-attacker {
+    grid-area: capt-att;
+    justify-self: end;
 }
 
 
@@ -119,11 +131,13 @@ $horizontal-layout-break: 600px;
 
     .game-stats {
         grid-template-columns: auto;
-        grid-template-rows: repeat(3, max-content);
+        grid-template-rows: repeat(5, max-content);
         grid-template-areas:
             "now-heading"
             "now"
-            "you";
+            "you"
+            "capt-att"
+            "capt-def";
         padding: 1rem;
     }
 
@@ -133,5 +147,11 @@ $horizontal-layout-break: 600px;
 
     .now-playing-wrap {
         width: 85%;
+    }
+
+    .you-are-wrap,
+    .captured-defender,
+    .captured-attacker {
+        justify-self: center;
     }
 }

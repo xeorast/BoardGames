@@ -28,6 +28,22 @@
                         <div class="piece" [ngClass]="game.playingAs"></div>
                     </div>
                 </div>
+
+                <div class="captured-attacker">
+                    <hr />
+                    Zbite
+                    <div class="player-token inline-player-token">
+                        <div class="piece attacker"></div>
+                    </div>
+                    : {{game.captured['attacker']}}
+                </div>
+                <div class="captured-defender">
+                    Zbite
+                    <div class="player-token inline-player-token">
+                        <div class="piece defender"></div>
+                    </div>
+                    : {{game.captured['defender']}}
+                </div>
             </div>
         </ng-container>
 
@@ -45,6 +61,22 @@
                     <div class="player-token inline-player-token placeholder">
                         <div class="piece" [ngClass]="preferredPlayer??'defender'"></div>
                     </div>
+                </div>
+
+                <div class="captured-attacker">
+                    <hr />
+                    Zbite
+                    <div class="player-token inline-player-token">
+                        <div class="piece attacker"></div>
+                    </div>
+                    : <span class="placeholder d-inline">0</span>
+                </div>
+                <div class="captured-defender">
+                    Zbite
+                    <div class="player-token inline-player-token">
+                        <div class="piece defender"></div>
+                    </div>
+                    : <span class="placeholder d-inline">0</span>
                 </div>
             </div>
         </ng-container>
