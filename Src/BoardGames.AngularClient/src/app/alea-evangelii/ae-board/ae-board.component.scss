@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "crossed-square.scss" as cross;
 @use "pieces.scss" with ($piece-zindex: 1);
 
@@ -6,6 +7,8 @@
 $field-zindex: 0;
 $selected-piece-zindex: 2;
 $selecting-piece-zindex: 3;
+$arrow-zindex: 10;
+$board-gap: 3px;
 
 .board-frame {
     --borders: #461f0f;
@@ -13,6 +16,14 @@ $selecting-piece-zindex: 3;
     padding: 20px;
     border: solid 3px var(--borders);
     position: relative;
+
+    @media (max-width: 500px) {
+        padding: 10px;
+    }
+
+    @media (max-width: 250px) {
+        padding: 5px;
+    }
 }
 
 .game-result,
@@ -46,9 +57,9 @@ $selecting-piece-zindex: 3;
     display: grid;
     grid-template-columns: repeat(var(--board-width), minmax(0, 1fr));
     grid-template-rows: repeat(var(--board-height), minmax(0, 1fr));
-    gap: 3px;
+    gap: $board-gap;
     background-color: var(--borders);
-    border: solid 3px var(--borders);
+    border: solid $board-gap var(--borders);
     isolation: isolate;
 }
 
@@ -80,4 +91,58 @@ $selecting-piece-zindex: 3;
 
 .piece.selectable:hover {
     z-index: $selecting-piece-zindex;
+}
+
+.arrow-box {
+    $arrow-thickness: .15rem;
+    $half-arrow-thickness: 0.075rem;
+    $neg-half-arrow-thickness: -0.075rem;
+    --wings-length: .75rem;
+
+    @media(max-width:700px) {
+        --wings-length: .5rem;
+    }
+
+    grid-column: var(--arrow-start-col);
+    grid-row: var(--arrow-start-row);
+    z-index: $arrow-zindex;
+    position: relative;
+    padding: 50%;
+
+    .arrow {
+        position: absolute;
+        pointer-events: none;
+
+        width: calc((100% + $board-gap) * var(--arrow-length));
+        height: $arrow-thickness;
+        border-radius: $half-arrow-thickness;
+
+        transform: translate($neg-half-arrow-thickness, $neg-half-arrow-thickness) rotate(var(--arrow-angle));
+        transform-origin: $half-arrow-thickness $half-arrow-thickness;
+
+        background: #eee6ba;
+        filter: drop-shadow(0 0 1px black);
+
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            right: 0;
+
+            width: var(--wings-length);
+            height: $arrow-thickness;
+            border-radius: $half-arrow-thickness;
+
+            transform-origin: calc(100% - $half-arrow-thickness + 1px) $half-arrow-thickness;
+            background: inherit;
+        }
+
+        &::before {
+            transform: rotate(45deg);
+        }
+
+        &::after {
+            transform: rotate(-45deg);
+        }
+    }
 }

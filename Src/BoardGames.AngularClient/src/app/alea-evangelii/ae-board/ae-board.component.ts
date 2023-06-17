@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Game } from '../logic/game';
 import { AeFieldModel } from './ae-feld-model';
+import { AeLastMoveArrowModel } from './ae-last-move-arrow-model';
 
 @Component( {
   selector: 'app-alea-evangelii-board',
@@ -11,6 +12,7 @@ export class AeBoardComponent implements OnInit {
 
   private _game?: Game | null;
   private _fields?: AeFieldModel[];
+  private _arrow?: AeLastMoveArrowModel;
 
   @Input()
   public get game(): Game | undefined | null { return this._game; }
@@ -18,9 +20,13 @@ export class AeBoardComponent implements OnInit {
     this._game = value;
     if ( value ) {
       this._fields = this.generateFields( value )
+      this._arrow = new AeLastMoveArrowModel( value )
     }
   }
+
   public get fields() { return this._fields }
+
+  public get arrow() { return this._arrow }
 
   public get gameResult(): GameResult | null {
     if ( !this.game?.winner ) {

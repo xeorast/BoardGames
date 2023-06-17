@@ -15,6 +15,16 @@
                 (click)="field.select()">
             </div>
         </ng-container>
+        <div *ngIf="arrow && arrow.isDefined && arrow.start"
+            class="arrow-box"
+            [ngStyle]="{
+                '--arrow-start-col': arrow.start.column+1,
+                '--arrow-start-row': arrow.start.row+1,
+                '--arrow-length': arrow.length,
+                '--arrow-angle': arrow.angle+'rad'
+            }">
+            <div class="arrow"></div>
+        </div>
     </div>
     <div *ngIf="gameResult"
         class="game-result"
