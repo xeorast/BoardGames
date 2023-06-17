@@ -7,22 +7,33 @@ public class AleaEvangeliiGame
 {
 	private readonly Board _board;
 
-	public AleaEvangeliiGame( Board board, Player? winner, Player? nowPlaying, MoveSummary? lastMove )
+	private readonly Dictionary<Player, int> _captured;
+
+	public AleaEvangeliiGame( Board board, Player? winner, Player? nowPlaying, MoveSummary? lastMove, Dictionary<Player, int> captured )
 	{
 		_board = board;
 		Winner = winner;
 		NowPlaying = nowPlaying;
 		LastMove = lastMove;
+		_captured = captured;
+		Captured = _captured.AsReadOnly();
 	}
 
 	public AleaEvangeliiGame()
 	{
 		_board = new();
+		_captured = new()
+		{
+			[Player.Attacker] = 0,
+			[Player.Defender] = 0,
+		};
+		Captured = _captured.AsReadOnly();
 	}
 
 	public Player? Winner { get; private set; }
 	public Player? NowPlaying { get; private set; } = Player.Attacker;
 	public MoveSummary? LastMove { get; private set; } = null;
+	public IReadOnlyDictionary<Player, int> Captured { get; }
 
 	private PieceType?[] GetColumn( int column )
 	{
@@ -101,6 +112,10 @@ public class AleaEvangeliiGame
 		var capturedPositions = _board.GetCapturedBy( to, piece );
 		foreach ( var capturedPosition in capturedPositions )
 		{
+			if ( _board[capturedPosition]?.Owner() is Player owner )
+			{
+				_captured[owner] += 1;
+			}
 			_board[capturedPosition] = null;
 		}
 

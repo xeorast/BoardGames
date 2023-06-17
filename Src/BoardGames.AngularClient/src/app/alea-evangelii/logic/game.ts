@@ -9,6 +9,7 @@ export class Game {
         public nowPlaying: Player | null,
         public winner: Player | null = null,
         public lastMove: MoveSummary | null,
+        public captured: Record<Player, number>,
         private moveCallback: ( from: Position, to: Position ) => Observable<MoveResult>
     ) { }
 

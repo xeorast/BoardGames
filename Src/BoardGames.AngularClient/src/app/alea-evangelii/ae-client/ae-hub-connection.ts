@@ -40,6 +40,7 @@ export class AeHubConnection extends AeHubConnectionBase {
             joinRes.nowPlaying,
             joinRes.winner,
             joinRes.lastMove,
+            joinRes.captured,
             ( from, to ) => this.move( from, to ) )
 
         this._roomId = joinRes.roomId

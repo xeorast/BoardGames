@@ -13,7 +13,14 @@ public interface IAleaEvangeliiClient
 	Task Disconnect( string reason );
 }
 
-public record struct AleaEvangeliiJoinResult( Player JoinedAs, string RoomId, Player? NowPlaying, Player? Winner, PieceType?[][] BoardState, MoveSummary? LastMove );
+public record struct AleaEvangeliiJoinResult(
+	Player JoinedAs,
+	string RoomId,
+	Player? NowPlaying,
+	Player? Winner,
+	PieceType?[][] BoardState,
+	MoveSummary? LastMove,
+	IReadOnlyDictionary<Player, int> Captured );
 
 public interface IAleaEvangeliiServer
 {
@@ -81,7 +88,8 @@ public class AleaEvangeliiHub : Hub<IAleaEvangeliiClient>, IAleaEvangeliiServer
 			game.NowPlaying,
 			game.Winner,
 			board.ToArrayOfArrays(),
-			game.LastMove );
+			game.LastMove,
+			game.Captured );
 		await Clients.Caller.JoinedAs( joinResult );
 	}
 

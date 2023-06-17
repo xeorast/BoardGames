@@ -95,4 +95,5 @@ export interface JoinResult {
     roomId: number
     boardState: BoardEntry[][]
     lastMove: MoveSummary | null
+    captured: Record<Player, number>
 }

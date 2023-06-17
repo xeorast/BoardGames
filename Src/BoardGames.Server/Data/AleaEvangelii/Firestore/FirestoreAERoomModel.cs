@@ -87,12 +87,16 @@ public class FirestoreAERoomModel
 	[FirestoreProperty]
 	public required MoveSummaryFirestoreModel? LastMove { get; set; }
 
+	[FirestoreProperty]
+	public Dictionary<string, int> Captured { get; set; } = new();
+
 	public AleaEvangeliiGame GetGame()
 	{
 		var stateArr = BoardState.Select( row => row.RowValue ).ToArray();
 		Board board = new( stateArr.To2DArray() );
 
-		return new( board, Winner, NowPlaying, LastMove?.ToSummary() );
+		var captured = Captured.ToDictionary( d => Enum.Parse<Player>( d.Key ), d => d.Value );
+		return new( board, Winner, NowPlaying, LastMove?.ToSummary(), captured );
 	}
 
 	public static FirestoreAERoomModel Create()
@@ -107,6 +111,7 @@ public class FirestoreAERoomModel
 			NowPlaying = game.NowPlaying,
 			Winner = game.Winner,
 			LastMove = game.LastMove is null ? null : MoveSummaryFirestoreModel.CreateFrom( game.LastMove ),
+			Captured = game.Captured.ToDictionary( d => d.Key.ToString(), d => d.Value ),
 		};
 	}
 
@@ -117,6 +122,7 @@ public class FirestoreAERoomModel
 		NowPlaying = game.NowPlaying;
 		Winner = game.Winner;
 		LastMove = game.LastMove is null ? null : MoveSummaryFirestoreModel.CreateFrom( game.LastMove );
+		Captured = game.Captured.ToDictionary( d => d.Key.ToString(), d => d.Value );
 	}
 
 }
