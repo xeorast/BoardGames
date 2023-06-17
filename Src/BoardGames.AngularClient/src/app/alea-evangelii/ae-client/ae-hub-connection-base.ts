@@ -84,6 +84,8 @@ export abstract class AeHubConnectionBase {
         this.hubConnection.on( 'Disconnect', dr => this._onDisconnect( dr ) )
         this.hubConnection.on( 'Disconnect', dr => this.onDisconnect( dr ) )
         this.hubConnection.onclose( err => this.onClose( err ) )
+        this.hubConnection.onclose( err => this._onDisconnect( err?.message ?? 'Connection aborted.' ) )
+        this.hubConnection.onclose( err => this.onDisconnect( err?.message ?? 'Connection aborted.' ) )
     }
 
 }
