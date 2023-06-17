@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, ParamMap, Router } from '@angular/router';
+import { filter, withLatestFrom } from 'rxjs';
 import { AeClientService } from '../ae-client/ae-client.service';
 import { AeHubConnection } from '../ae-client/ae-hub-connection';
 import { AeConnectionManagerService } from '../ae-connection-manager/ae-connection-manager.service';
-import { withLatestFrom } from 'rxjs';
 import { Player } from '../logic/types';
 
 @Component( {
@@ -33,16 +33,25 @@ export class AeRoomComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.url
       .pipe( withLatestFrom( this.route.paramMap, this.route.queryParamMap ) )
-      .subscribe( ( [url, paramMap, queryParamMap] ) => {
-        let id = paramMap.get( 'room-id' )
-        let player = queryParamMap.get( 'player' ) as Player
-        this.preferredPlayer = player
-        this.connectTo( id, player )
-      } );
+      .subscribe( ( [_url, paramMap, queryParamMap] ) => this.onUrlChange( paramMap, queryParamMap ) );
+
+    this.router.events
+      .pipe(
+        filter( event => event instanceof NavigationEnd ),
+        withLatestFrom( this.route.paramMap, this.route.queryParamMap )
+      )
+      .subscribe( ( [_event, paramMap, queryParamMap] ) => this.onUrlChange( paramMap, queryParamMap ) );
   }
 
   ngOnDestroy(): void {
     this.gameConnection?.disconnect()
+  }
+
+  onUrlChange( paramMap: ParamMap, queryParamMap: ParamMap ) {
+    let id = paramMap.get( 'room-id' )
+    let player = queryParamMap.get( 'player' ) as Player
+    this.preferredPlayer = player
+    this.connectTo( id, player )
   }
 
   connectTo( rommIdVal: string | null, player: Player | null ) {
