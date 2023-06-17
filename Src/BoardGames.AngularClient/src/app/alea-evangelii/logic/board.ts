@@ -51,6 +51,7 @@ export class Board {
         row = fromRow
         column = fromColumn + 1
         while ( column < this.piecesMap[row].length
+            && this.piecesMap[row][column] == null
             && ( isCommander || !this.isForbidden( row, column ) ) ) {
             moves.push( { row, column } )
             column += 1
